@@ -1,0 +1,21 @@
+@startuml SnakeGame
+class Juego
+
+class Mundo
+class Cuadro 
+
+class Snale
+
+
+
+
+
+
+
+
+
+
+
+
+
+@enduml
