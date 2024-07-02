@@ -3,10 +3,10 @@
 #include <Box2D/Box2D.h>
 #include <Mapa.hpp>
 #include <iostream>
-#include <Snake.hpp>
 #include <Food.hpp>
 #include <cstdlib>
 #include <ctime>
+#include <Serpiente.hpp>
 
 
 double velocidad = 0.3;
@@ -15,7 +15,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(640, 499), "juegoSnake");
 
-    Snake snake(sf::Vector2f(400, 300), sf::Color::Yellow);
+    Serpiente snake(sf::Vector2f(400, 300), sf::Color::Yellow);
     Mapa mapa(sf::Vector2f(400, 300), sf::Color::Black);
     Food food(sf::Vector2f(400, 300), sf::Color::Black);
 
@@ -56,6 +56,23 @@ int main()
             {
                 window.close();
             }
+
+             if (event.type == sf::Event::KeyPressed) {
+                switch (event.key.code) {
+                    case sf::Keyboard::Up:    snake.setDirection(Direction::Up); break;
+                    case sf::Keyboard::Down:  snake.setDirection(Direction::Down); break;
+                    case sf::Keyboard::Left:  snake.setDirection(Direction::Left); break;
+                    case sf::Keyboard::Right: snake.setDirection(Direction::Right); break;
+                    default: break;
+                }
+            }
+        }
+
+        snake.move();
+          // Detectar colisión con la comida
+        if (snake.getHeadBounds().intersects(food.food.getGlobalBounds())) {
+            snake.grow();
+            food.setPosition(getRandomPosition());
         }
 
         // Ver tiempo transcurrido
@@ -64,24 +81,7 @@ int main()
 
         // Mover serpiente
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            snake.moveL(velocidad * -1, 0);
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            snake.moveR(velocidad * 1, 0);
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            snake.moveU(0, velocidad * -1);
-
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            snake.moveD(0, velocidad * 1);
-        }
-
+       
         // Detectar colisiones con las paredes
 
         if (snake.DetectarColision(techo.getGlobalBounds()))
@@ -120,6 +120,8 @@ int main()
         mapa.draw(window);
         snake.draw(window);
         food.draw(window);
+
+    
 
         // Dibujar las paredes
         window.draw(techo);
